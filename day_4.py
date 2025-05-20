@@ -1,50 +1,62 @@
+from collections import Counter
+
 data = []
-with open('./inputs/aoc_4.txt', 'r') as f:
-    for line in f:
-        newLine = ['0','0','0']+list(line.strip())+['0','0','0']
-        # newLine = list(line.strip())
-        data.append(newLine)
+with open('./inputs/aoc_4.txt', 'r') as file:
+    for line in file:
+        data.append(list(line.strip()))
 
-testData = [
-    ['0','0','0','M','M','M','S','X','X','M','A','S','M','0','0','0'],
-['0','0','0','M','S','A','M','X','M','S','M','S','A','0','0','0'],
-['0','0','0','A','M','X','S','X','M','A','A','M','M','0','0','0'],
-['0','0','0','M','S','A','M','A','S','M','S','M','X','0','0','0'],
-['0','0','0','X','M','A','S','A','M','X','A','M','M','0','0','0'],
-['0','0','0','X','X','A','M','M','X','X','A','M','A','0','0','0'],
-['0','0','0','S','M','S','M','S','A','S','X','S','S','0','0','0'],
-['0','0','0','S','A','X','A','M','A','S','A','A','A','0','0','0'],
-['0','0','0','M','A','M','M','M','X','M','M','M','M','0','0','0'],
-['0','0','0','M','X','M','X','A','X','M','A','S','X','0','0','0']]
+# --------------- PART 1 -----------------
+# x_max = len(data[0])
+# y_max = len(data)
+#
+# # Padding the data
+# for r in data:
+#     r.extend(['0', '0', '0'])
+#
+# for _ in range(3):
+#     data.append(['0']*(x_max+3))
+#
+# def count_xmas(grid):
+#     count = 0
+#     for i in range(y_max):
+#         for j in range(x_max):
+#             if ''.join([grid[i][j], grid[i][j+1], grid[i][j+2], grid[i][j+3]]) in {'XMAS', 'SAMX'}:
+#                 count += 1
+#             if ''.join([grid[i][j], grid[i+1][j], grid[i+2][j], grid[i+3][j]]) in {'XMAS', 'SAMX'}:
+#                 count += 1
+#             if ''.join([grid[i][j], grid[i+1][j+1], grid[i+2][j+2], grid[i+3][j+3]]) in {'XMAS', 'SAMX'}:
+#                 count += 1
+#             if ''.join([grid[i][j], grid[i + 1][j - 1], grid[i + 2][j - 2], grid[i + 3][j - 3]]) in {'XMAS', 'SAMX'}:
+#                 count += 1
+#     return count
+#
+# print(count_xmas(data))
 
-def count_XMAS(grid):
-    patterns = {'XMAS', 'SAMX'}
-    R, C = len(grid), len(grid[0])
-    pad = 3
+# --------------- PART 2 -----------------
+print(data)
+x_max = len(data[0])
+y_max = len(data)
 
+# Padding the data
+new_data = [['0']*(x_max+2)]
+for r in data:
+    l = ['0']+r+['0']
+    new_data.append(l)
+new_data.append(['0']*(x_max+2))
 
-    P = [['0'] * (C + 2*pad) for _ in range(pad)]
-    for row in grid:
-        P.append(['0']*pad + row + ['0']*pad)
-    P += [['0'] * (C + 2*pad) for _ in range(pad)]
+def rotate(l, n):
+    return l[n:] + l[:n]
 
+def count_xmas_updated(data):
+    target = ['M','M','S','S']
     count = 0
-    for i in range(pad, pad+R):
-        for j in range(pad, pad+C):
-
-            if ''.join(P[i][j+k] for k in range(4)) in patterns:
-                count += 1
-
-            if ''.join(P[i+k][j]   for k in range(4)) in patterns:
-                count += 1
-
-            if ''.join(P[i+k][j+k] for k in range(4)) in patterns:
-                count += 1
-
-            if ''.join(P[i+k][j-k] for k in range(4)) in patterns:
-                count += 1
-
+    for i in range(1, y_max+1):
+        for j in range(1, x_max+1):
+            if new_data[i][j] == 'A':
+                    test = [new_data[i-1][j-1], new_data[i-1][j+1], new_data[i+1][j+1], new_data[i+1][j-1]]
+                    for _ in range(4):
+                        if test == rotate(target, _):
+                            count += 1
     return count
 
-print(count_XMAS(data))
-
+print(count_xmas_updated(data))

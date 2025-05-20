@@ -1,29 +1,30 @@
 from collections import defaultdict
 
+left_locations = []
+right_locations = []
+with open("inputs/aoc_1.txt") as f:
+    for line in f:
+      left_locations.append(int(line.split()[0]))
+      right_locations.append(int(line.split()[1]))
+
 # --------------- PART 1 -----------------
-leftInput, rightInput = [], []
-with open('./inputs/aoc_1.txt', 'r') as file:
-    for line in file:
-        newLine = list(line.rstrip('\n').split())
-        leftInput.append(int(newLine[0]))
-        rightInput.append(int(newLine[1]))
+result = 0
 
-leftInput.sort()
-rightInput.sort()
+left_locations.sort()
+right_locations.sort()
 
-distance = 0
-for i in range(len(leftInput)):
-    distance += abs(leftInput[i] - rightInput[i])
+for i in range(len(left_locations)):
+    result += abs(left_locations[i] - right_locations[i])
 
-print(distance)
+print(result) #ANSWER: 2_113_135
 
 # --------------- PART 2 -----------------
-rightDict = defaultdict(int)
-for num in rightInput:
-    rightDict[num] += 1
+r_dict = defaultdict(int)
 
-similarityScore = 0
-for num in leftInput:
-    similarityScore += num * rightDict[num]
+for id in right_locations:
+    r_dict[id] += 1
 
-print(similarityScore)
+similarity_score = 0
+for id in left_locations:
+    similarity_score += id * r_dict[id]
+print(similarity_score) # 19_097_157
